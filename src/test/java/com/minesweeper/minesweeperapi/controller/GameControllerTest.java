@@ -62,6 +62,9 @@ public class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(
                         jsonPath("$.id").value("1")
+                )
+                .andExpect(
+                        jsonPath("$.status").value("PLAYING")
                 );
     }
 

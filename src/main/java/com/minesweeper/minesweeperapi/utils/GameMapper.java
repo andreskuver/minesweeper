@@ -15,6 +15,8 @@ public class GameMapper {
     public static GameResponse from(Game game) {
         GameResponse gameResponse = new GameResponse();
         gameResponse.setId(game.getId());
+        gameResponse.setStatus(game.getStatus());
+        gameResponse.setCells(game.getCells());
         return gameResponse;
     }
 }
