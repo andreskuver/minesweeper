@@ -48,10 +48,28 @@ public class GameControllerTest {
     }
 
     @Test
+    public void createNewGameWithInvalidMinesShouldReturnBadRequest() throws Exception {
+        CreateGameRequest createGameRequest = new CreateGameRequest();
+        createGameRequest.setCols(10);
+        createGameRequest.setRows(10);
+        createGameRequest.setMines(101);
+
+        this.mockMvc
+                .perform(post("/api/game")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(createGameRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Mines number is invalid"));
+    }
+
+    @Test
     public void shouldCreateANewGame() throws Exception {
         CreateGameRequest createGameRequest = new CreateGameRequest();
         createGameRequest.setCols(4);
         createGameRequest.setRows(4);
+        createGameRequest.setMines(2);
 
         this.mockMvc
                 .perform(post("/api/game")

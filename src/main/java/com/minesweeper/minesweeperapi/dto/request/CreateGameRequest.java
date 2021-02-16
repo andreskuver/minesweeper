@@ -4,6 +4,10 @@ import lombok.Data;
 
 @Data
 public class CreateGameRequest {
+
     private int cols;
+
     private int rows;
+
+    private int mines;
 }

@@ -33,11 +33,14 @@ public class GameServiceImpl implements GameService {
         // Validate rows and cols size
         validateInput(createGameRequest);
 
+        Cell[][] boardCells = boardRepository.initializeBoard(createGameRequest.getCols(), createGameRequest.getRows());
+        boardRepository.addMinesToBoardCells(boardCells, createGameRequest.getMines());
+
         // Create new Game
         Game game = Game.builder()
                 .id(1L)
                 .status(GameStatus.PLAYING)
-                .cells(boardRepository.initializeBoard(createGameRequest.getCols(), createGameRequest.getRows()))
+                .cells(boardCells)
                 .build();
 
         // Finally map the Game to a representational object
@@ -45,10 +48,16 @@ public class GameServiceImpl implements GameService {
     }
 
     private void validateInput(CreateGameRequest createGameRequest) {
-
-        if (createGameRequest.getCols() > config.getColsMax() || createGameRequest.getCols() < config.getColsMin()
-        || createGameRequest.getRows() > config.getRowsMax() || createGameRequest.getRows() < config.getRowsMin()) {
+        int reqCols = createGameRequest.getCols();
+        int reqRows = createGameRequest.getRows();
+        if (reqCols > config.getColsMax() || reqCols< config.getColsMin()
+        || reqRows > config.getRowsMax() || reqRows < config.getRowsMin()) {
             throw new InvalidInputForCreateGameException("Rows or Cols size is invalid");
+        }
+
+        int reqMines = createGameRequest.getMines();
+        if (reqMines < 1 || reqMines > reqCols * reqRows) {
+            throw new InvalidInputForCreateGameException("Mines number is invalid");
         }
     }
 }
