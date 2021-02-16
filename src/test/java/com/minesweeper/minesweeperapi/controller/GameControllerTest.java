@@ -79,7 +79,7 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(
-                        jsonPath("$.id").value("1")
+                        jsonPath("$.id").value("100")
                 )
                 .andExpect(
                         jsonPath("$.status").value("PLAYING")
