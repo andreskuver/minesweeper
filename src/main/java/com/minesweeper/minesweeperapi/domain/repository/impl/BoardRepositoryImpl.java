@@ -33,8 +33,27 @@ public class BoardRepositoryImpl implements BoardRepository {
             int y = randGenerator.nextInt(cols);
             if (!boardCells[x][y].isMine()) {
                 boardCells[x][y].setMine(true);
+                updateAdjacentMines(boardCells, x, y);
                 boardMines++;
             }
         } while (boardMines < mines);
+    }
+
+    public void updateAdjacentMines(Cell[][] boardCells, int x, int y) {
+        incrementAdjacentMines(boardCells, x - 1, y - 1);
+        incrementAdjacentMines(boardCells, x - 1, y);
+        incrementAdjacentMines(boardCells,x - 1, y + 1);
+        incrementAdjacentMines(boardCells, x,y - 1);
+        incrementAdjacentMines(boardCells, x, y + 1);
+        incrementAdjacentMines(boardCells, x + 1, y - 1);
+        incrementAdjacentMines(boardCells, x + 1, y);
+        incrementAdjacentMines(boardCells,x + 1, y + 1);
+    }
+
+    private void incrementAdjacentMines(Cell[][] board, int x, int y) {
+        if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
+            int adjacentMines = board[x][y].getAdjacentMines() + 1;
+            board[x][y].setAdjacentMines(adjacentMines);
+        }
     }
 }
