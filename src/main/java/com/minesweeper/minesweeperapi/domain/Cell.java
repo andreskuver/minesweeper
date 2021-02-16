@@ -12,4 +12,6 @@ public class Cell {
     private boolean uncovered;
 
     private boolean isMine;
+
+    private int adjacentMines;
 }

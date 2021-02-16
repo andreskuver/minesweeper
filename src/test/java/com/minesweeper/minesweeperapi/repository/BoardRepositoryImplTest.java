@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class BoardRepositoryImplTest {
@@ -49,4 +48,42 @@ public class BoardRepositoryImplTest {
 
         assertEquals(mines, cellsWithMines.size());
     }
+
+    @Test
+    public void testAdjacentMinesCount() {
+        int cols = 10;
+        int rows = 11;
+        int mines = 5;
+
+        Cell[][] board = boardRepository.initializeBoard(cols, rows);
+        boardRepository.addMinesToBoardCells(board, mines);
+
+        for (int x = 0; x < rows; x++) {
+            for (int y = 0; y < cols; y++) {
+                if (board[x][y].isMine()) {
+                    assertAdjacentMines(board, x, y);
+                }
+            }
+        }
+    }
+
+    ///
+    /// Utils fot test
+    ///
+    private void assertAdjacentMines(Cell[][] board, int x, int y) {
+        assertAdjacent(board, x - 1, y - 1);
+        assertAdjacent(board, x - 1, y);
+        assertAdjacent(board,x - 1, y + 1);
+        assertAdjacent(board, x,y - 1);
+        assertAdjacent(board, x, y + 1);
+        assertAdjacent(board, x + 1, y - 1);
+        assertAdjacent(board, x + 1, y);
+        assertAdjacent(board,x + 1, y + 1);
+    }
+
+   private void assertAdjacent(Cell[][] board, int x, int y) {
+        if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
+            assertTrue(board[x][y].getAdjacentMines() > 0);
+        }
+   }
 }
