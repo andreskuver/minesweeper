@@ -5,6 +5,7 @@ import com.minesweeper.minesweeperapi.domain.Cell;
 import com.minesweeper.minesweeperapi.domain.Game;
 import com.minesweeper.minesweeperapi.domain.GameStatus;
 import com.minesweeper.minesweeperapi.domain.repository.BoardRepository;
+import com.minesweeper.minesweeperapi.domain.repository.GameRepository;
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
 import com.minesweeper.minesweeperapi.exception.InvalidInputForCreateGameException;
@@ -13,8 +14,6 @@ import com.minesweeper.minesweeperapi.utils.GameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.IntStream;
-
 @Service
 public class GameServiceImpl implements GameService {
 
@@ -22,10 +21,16 @@ public class GameServiceImpl implements GameService {
 
     private BoardRepository boardRepository;
 
+    private GameRepository gameRepository;
+
     @Autowired
-    private GameServiceImpl(Config config, BoardRepository boardRepository) {
+    private GameServiceImpl(Config config,
+                            BoardRepository boardRepository,
+                            GameRepository gameRepository
+                            ) {
         this.config = config;
         this.boardRepository = boardRepository;
+        this.gameRepository = gameRepository;
     }
 
     @Override
@@ -38,10 +43,11 @@ public class GameServiceImpl implements GameService {
 
         // Create new Game
         Game game = Game.builder()
-                .id(1L)
                 .status(GameStatus.PLAYING)
                 .cells(boardCells)
                 .build();
+
+        gameRepository.save(game);
 
         // Finally map the Game to a representational object
         return GameMapper.from(game);
