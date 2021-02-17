@@ -1,5 +1,6 @@
 package com.minesweeper.minesweeperapi.controller;
 
+import com.minesweeper.minesweeperapi.domain.CellMark;
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
 import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
@@ -33,6 +34,22 @@ public class GameController {
                                         @RequestBody UpdateGameRequest updateGameRequest) {
         log.info("[action:updateGame][posX:{}][posY:{}]", updateGameRequest.getPosX(), updateGameRequest.getPosY());
         GameResponse gameResponse = gameService.updateGame(gameId, updateGameRequest);
+        return ResponseEntity.ok(gameResponse);
+    }
+
+    @PutMapping(value = "/{gameId}/flag", consumes = "application/json")
+    public ResponseEntity<?> updateCellWithRedFlag(@PathVariable Long gameId,
+                                        @RequestBody UpdateGameRequest updateGameRequest) {
+        log.info("[action:updateCellWithRedFlag][posX:{}][posY:{}]", updateGameRequest.getPosX(), updateGameRequest.getPosY());
+        GameResponse gameResponse = gameService.markCell(gameId, updateGameRequest, CellMark.FLAG);
+        return ResponseEntity.ok(gameResponse);
+    }
+
+    @PutMapping(value = "/{gameId}/question", consumes = "application/json")
+    public ResponseEntity<?> updateCellWithQuestionMark(@PathVariable Long gameId,
+                                        @RequestBody UpdateGameRequest updateGameRequest) {
+        log.info("[action:updateCellWithQuestionMark][posX:{}][posY:{}]", updateGameRequest.getPosX(), updateGameRequest.getPosY());
+        GameResponse gameResponse = gameService.markCell(gameId, updateGameRequest, CellMark.QUESTION);
         return ResponseEntity.ok(gameResponse);
     }
 }

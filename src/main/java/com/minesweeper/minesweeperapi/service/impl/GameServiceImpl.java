@@ -2,6 +2,7 @@ package com.minesweeper.minesweeperapi.service.impl;
 
 import com.minesweeper.minesweeperapi.configuration.Config;
 import com.minesweeper.minesweeperapi.domain.Cell;
+import com.minesweeper.minesweeperapi.domain.CellMark;
 import com.minesweeper.minesweeperapi.domain.Game;
 import com.minesweeper.minesweeperapi.domain.GameStatus;
 import com.minesweeper.minesweeperapi.domain.repository.BoardRepository;
@@ -30,7 +31,7 @@ public class GameServiceImpl implements GameService {
     private GameRepository gameRepository;
 
     @Autowired
-    private GameServiceImpl(Config config,
+    public GameServiceImpl(Config config,
                             BoardRepository boardRepository,
                             GameRepository gameRepository
                             ) {
@@ -83,6 +84,27 @@ public class GameServiceImpl implements GameService {
         }
 
         gameRepository.save(game);
+
+        // Finally map the Game to a representational object
+        return GameMapper.from(game);
+    }
+
+    public GameResponse markCell(Long gameId, UpdateGameRequest updateGameRequest, CellMark cellMark) {
+        Optional<Game> optionalGame = gameRepository.findByIdAndStatus(gameId, GameStatus.PLAYING);
+
+        if (!optionalGame.isPresent()) {
+            throw new GameNotExistsException(String.format("Game %d not exists or is finished", gameId));
+        }
+
+        Game game = optionalGame.get();
+        Cell cell = game.getCells()[updateGameRequest.getPosX()][updateGameRequest.getPosY()];
+
+        // Only mark the cell if it is covered
+        if (!cell.isUncovered()) {
+            cell.setFlag(cellMark);
+
+            gameRepository.save(game);
+        }
 
         // Finally map the Game to a representational object
         return GameMapper.from(game);

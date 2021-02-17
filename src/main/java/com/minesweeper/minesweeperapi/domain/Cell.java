@@ -14,4 +14,6 @@ public class Cell {
     private boolean isMine;
 
     private int adjacentMines;
+
+    private CellMark flag;
 }

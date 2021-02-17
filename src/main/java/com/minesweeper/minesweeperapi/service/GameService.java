@@ -1,5 +1,6 @@
 package com.minesweeper.minesweeperapi.service;
 
+import com.minesweeper.minesweeperapi.domain.CellMark;
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
 import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
@@ -15,4 +16,6 @@ public interface GameService {
      * Update an existing Game with the given request properties
      */
     GameResponse updateGame(Long gameId, UpdateGameRequest updateGameRequest);
+
+    GameResponse markCell(Long gameId, UpdateGameRequest updateGameRequest, CellMark cellMark);
 }
