@@ -1,6 +1,7 @@
 package com.minesweeper.minesweeperapi.controller;
 
 import com.minesweeper.minesweeperapi.dto.response.ErrorResponse;
+import com.minesweeper.minesweeperapi.exception.GameNotExistsException;
 import com.minesweeper.minesweeperapi.exception.InvalidInputForCreateGameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         // InvalidInputForCreateGameException is treated as Bad Request HTTP status
         if (exception instanceof InvalidInputForCreateGameException) {
             status = HttpStatus.BAD_REQUEST;
+            errorResponse = new ErrorResponse(exception.getMessage());
+            return customHandler(errorResponse, status);
+        }
+
+        // GameNotExistsException is treated as Not Found HTTP status
+        if (exception instanceof GameNotExistsException) {
+            status = HttpStatus.NOT_FOUND;
             errorResponse = new ErrorResponse(exception.getMessage());
             return customHandler(errorResponse, status);
         }

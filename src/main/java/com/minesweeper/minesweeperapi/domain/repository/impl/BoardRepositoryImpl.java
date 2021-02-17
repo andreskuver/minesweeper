@@ -50,6 +50,17 @@ public class BoardRepositoryImpl implements BoardRepository {
         incrementAdjacentMines(boardCells,x + 1, y + 1);
     }
 
+    public boolean allCellsAreUncovered(Cell[][] boardCells) {
+        for (Cell[] row : boardCells) {
+            for (Cell cell : row) {
+                if (!cell.isMine() && !cell.isUncovered()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void incrementAdjacentMines(Cell[][] board, int x, int y) {
         if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
             int adjacentMines = board[x][y].getAdjacentMines() + 1;

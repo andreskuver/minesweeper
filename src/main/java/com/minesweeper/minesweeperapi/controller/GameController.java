@@ -1,6 +1,7 @@
 package com.minesweeper.minesweeperapi.controller;
 
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
+import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
 import com.minesweeper.minesweeperapi.service.GameService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,10 @@ public class GameController {
     }
 
     @PutMapping(value = "/{gameId}", consumes = "application/json")
-    public ResponseEntity<?> updateGame(@PathVariable Long gameId) {
-        return ResponseEntity.ok(String.format("ok handle action for game %d", gameId));
+    public ResponseEntity<?> updateGame(@PathVariable Long gameId,
+                                        @RequestBody UpdateGameRequest updateGameRequest) {
+        log.info("[action:updateGame][posX:{}][posY:{}]", updateGameRequest.getPosX(), updateGameRequest.getPosY());
+        GameResponse gameResponse = gameService.updateGame(gameId, updateGameRequest);
+        return ResponseEntity.ok(gameResponse);
     }
 }

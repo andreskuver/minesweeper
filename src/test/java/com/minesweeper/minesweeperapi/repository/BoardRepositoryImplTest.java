@@ -67,6 +67,40 @@ public class BoardRepositoryImplTest {
         }
     }
 
+    @Test
+    public void testAllCellsAreUncoveredWithAllUncovered() {
+        int cols = 10;
+        int rows = 11;
+
+        Cell[][] board = boardRepository.initializeBoard(cols, rows);
+
+        for (int x = 0; x < rows; x++) {
+            for (int y = 0; y < cols; y++) {
+                board[x][y].setUncovered(true);
+            }
+        }
+
+        assertTrue(boardRepository.allCellsAreUncovered(board));
+    }
+
+    @Test
+    public void testAllCellsAreUncoveredWithNotAllUncovered() {
+        int cols = 10;
+        int rows = 11;
+
+        Cell[][] board = boardRepository.initializeBoard(cols, rows);
+
+        for (int x = 0; x < rows; x++) {
+            for (int y = 0; y < cols; y++) {
+                board[x][y].setUncovered(true);
+            }
+        }
+
+        board[1][2].setUncovered(false);
+
+        assertFalse(boardRepository.allCellsAreUncovered(board));
+    }
+
     ///
     /// Utils fot test
     ///

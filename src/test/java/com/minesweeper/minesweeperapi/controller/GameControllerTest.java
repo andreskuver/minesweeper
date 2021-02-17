@@ -2,6 +2,7 @@ package com.minesweeper.minesweeperapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
+import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -87,14 +87,20 @@ public class GameControllerTest {
     }
 
     @Test
-    public void shouldUpdateAGame() throws Exception {
+    public void shouldReturnNotFoundWhenGameNotExists() throws Exception {
+        UpdateGameRequest updateGameRequest = new UpdateGameRequest();
+        updateGameRequest.setPosX(3);
+        updateGameRequest.setPosY(4);
+
         this.mockMvc
                 .perform(
-                        put("/api/game/1").contentType(MediaType.APPLICATION_JSON)
+                        put("/api/game/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(updateGameRequest))
                 )
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("ok handle action for game 1")));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Game 1 not exists or is finished"));
     }
 
     public static String asJsonString(final Object obj) {

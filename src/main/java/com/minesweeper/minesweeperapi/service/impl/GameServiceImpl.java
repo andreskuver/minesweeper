@@ -7,14 +7,20 @@ import com.minesweeper.minesweeperapi.domain.GameStatus;
 import com.minesweeper.minesweeperapi.domain.repository.BoardRepository;
 import com.minesweeper.minesweeperapi.domain.repository.GameRepository;
 import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
+import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
+import com.minesweeper.minesweeperapi.exception.GameNotExistsException;
 import com.minesweeper.minesweeperapi.exception.InvalidInputForCreateGameException;
 import com.minesweeper.minesweeperapi.service.GameService;
 import com.minesweeper.minesweeperapi.utils.GameMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
+@Slf4j
 public class GameServiceImpl implements GameService {
 
     private Config config;
@@ -53,6 +59,35 @@ public class GameServiceImpl implements GameService {
         return GameMapper.from(game);
     }
 
+    public GameResponse updateGame(Long gameId, UpdateGameRequest updateGameRequest) {
+        Optional<Game> optionalGame = gameRepository.findByIdAndStatus(gameId, GameStatus.PLAYING);
+
+        if (!optionalGame.isPresent()) {
+            throw new GameNotExistsException(String.format("Game %d not exists or is finished", gameId));
+        }
+
+        Game game = optionalGame.get();
+        Cell cell = game.getCells()[updateGameRequest.getPosX()][updateGameRequest.getPosY()];
+        cell.setUncovered(true);
+
+        if (cell.isMine()) {
+            game.setStatus(GameStatus.DEFEAT);
+            log.info("[action:updateGame][message:DEFEAT]");
+        } else {
+
+            boolean isTheGameFinishedWithVictory = isVictory(game.getCells());
+            if (isTheGameFinishedWithVictory) {
+                game.setStatus(GameStatus.VICTORY);
+                log.info("[action:updateGame][message:VICTORY]");
+            }
+        }
+
+        gameRepository.save(game);
+
+        // Finally map the Game to a representational object
+        return GameMapper.from(game);
+    }
+
     private void validateInput(CreateGameRequest createGameRequest) {
         int reqCols = createGameRequest.getCols();
         int reqRows = createGameRequest.getRows();
@@ -65,5 +100,9 @@ public class GameServiceImpl implements GameService {
         if (reqMines < 1 || reqMines > reqCols * reqRows) {
             throw new InvalidInputForCreateGameException("Mines number is invalid");
         }
+    }
+
+    private boolean isVictory(Cell[][] boardCells) {
+        return boardRepository.allCellsAreUncovered(boardCells);
     }
 }

@@ -1,11 +1,11 @@
 package com.minesweeper.minesweeperapi.exception;
 
 /**
- * This exception represent an error cause of invalid input for create game
+ * This exception represent an error cause of trying to work with an non existing game
  */
-public class InvalidInputForCreateGameException extends RuntimeException {
+public class GameNotExistsException extends RuntimeException {
 
-    public InvalidInputForCreateGameException(String message) {
+    public GameNotExistsException(String message) {
         super(message);
     }
 }
