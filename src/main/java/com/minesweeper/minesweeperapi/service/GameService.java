@@ -5,7 +5,19 @@ import com.minesweeper.minesweeperapi.dto.request.CreateGameRequest;
 import com.minesweeper.minesweeperapi.dto.request.UpdateGameRequest;
 import com.minesweeper.minesweeperapi.dto.response.GameResponse;
 
+import java.util.List;
+
 public interface GameService {
+
+    /**
+     * Get all games
+     */
+    List<GameResponse> getAllGames();
+
+    /**
+     * Get game by Id
+     */
+    GameResponse getGameById(long gameId);
 
     /**
      * Create a new Game for the given request properties

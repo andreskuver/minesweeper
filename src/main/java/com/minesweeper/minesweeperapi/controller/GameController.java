@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/game")
 @Slf4j
@@ -20,6 +22,20 @@ public class GameController {
     @Autowired
     public GameController(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    @GetMapping(value = "", consumes = "application/json")
+    public ResponseEntity<?> getAll() {
+        log.info("[action:getAll]");
+        List<GameResponse> gameResponse = gameService.getAllGames();
+        return ResponseEntity.ok(gameResponse);
+    }
+
+    @GetMapping(value = "/{gameId}", consumes = "application/json")
+    public ResponseEntity<?> getById(@PathVariable Long gameId) {
+        log.info("[action:getById]");
+        GameResponse gameResponse = gameService.getGameById(gameId);
+        return ResponseEntity.ok(gameResponse);
     }
 
     @PostMapping(value = "", consumes = "application/json")

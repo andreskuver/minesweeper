@@ -18,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,6 +40,20 @@ public class GameServiceImpl implements GameService {
         this.config = config;
         this.boardRepository = boardRepository;
         this.gameRepository = gameRepository;
+    }
+
+    public List<GameResponse> getAllGames() {
+        List<Game> games = gameRepository.findAll();
+        return games.stream().map(GameMapper::from).collect(Collectors.toList());
+    }
+
+    public GameResponse getGameById(long gameId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isPresent()) {
+            return GameMapper.from(game.get());
+        }
+
+        throw new GameNotExistsException(String.format("Game %d not exists", gameId));
     }
 
     @Override
