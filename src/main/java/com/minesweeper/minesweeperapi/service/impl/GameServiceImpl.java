@@ -68,13 +68,15 @@ public class GameServiceImpl implements GameService {
         }
 
         Game game = optionalGame.get();
-        Cell cell = game.getCells()[updateGameRequest.getPosX()][updateGameRequest.getPosY()];
-        cell.setUncovered(true);
+        Cell cell = game.getCells()[updateGameRequest.getPosY()][updateGameRequest.getPosX()];
 
         if (cell.isMine()) {
             game.setStatus(GameStatus.DEFEAT);
             log.info("[action:updateGame][message:DEFEAT]");
         } else {
+
+            // Uncover all neighbours
+            boardRepository.uncoverNeighbours(game.getCells(), updateGameRequest.getPosX(), updateGameRequest.getPosY());
 
             boolean isTheGameFinishedWithVictory = isVictory(game.getCells());
             if (isTheGameFinishedWithVictory) {

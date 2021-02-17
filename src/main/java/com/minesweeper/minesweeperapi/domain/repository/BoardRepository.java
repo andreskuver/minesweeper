@@ -9,4 +9,6 @@ public interface BoardRepository {
     void addMinesToBoardCells(Cell[][] boardCells, int mines);
 
     boolean allCellsAreUncovered(Cell[][] boardCells);
+
+    void uncoverNeighbours(Cell[][] boardCells, int posX, int posY);
 }

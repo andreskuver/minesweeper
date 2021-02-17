@@ -17,5 +17,8 @@ public interface GameService {
      */
     GameResponse updateGame(Long gameId, UpdateGameRequest updateGameRequest);
 
+    /**
+     * Mark a cell with a Flag or Question
+     */
     GameResponse markCell(Long gameId, UpdateGameRequest updateGameRequest, CellMark cellMark);
 }
